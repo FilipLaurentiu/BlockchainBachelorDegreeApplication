@@ -1,0 +1,19 @@
+{
+  "name": "blockchainbachelordegreeapplication",
+  "version": "0.0.1",
+  "description": "Blockchain application for my university bachelor degree",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FilipLaurentiu/BlockchainBachelorDegreeApplication.git"
+  },
+  "author": "Filip Laurentiu",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/FilipLaurentiu/BlockchainBachelorDegreeApplication/issues"
+  },
+  "homepage": "https://github.com/FilipLaurentiu/BlockchainBachelorDegreeApplication#readme"
+}
