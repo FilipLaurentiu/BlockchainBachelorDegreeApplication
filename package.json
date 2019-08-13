@@ -4,7 +4,7 @@
   "description": "Blockchain application for my university bachelor degree",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node ./dev/test.js"
   },
   "repository": {
     "type": "git",
@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/FilipLaurentiu/BlockchainBachelorDegreeApplication/issues"
   },
-  "homepage": "https://github.com/FilipLaurentiu/BlockchainBachelorDegreeApplication#readme"
+  "homepage": "https://github.com/FilipLaurentiu/BlockchainBachelorDegreeApplication#readme",
+  "dependencies": {
+    "sha256": "^0.2.0"
+  }
 }
