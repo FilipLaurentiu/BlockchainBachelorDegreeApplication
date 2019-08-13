@@ -2,14 +2,16 @@ const sha256 = require('sha256');
 
 
 class Blockchain {
-    constructor() {
+    constructor(difficulty = '0000') {
         this.chain = [];
         this.pendingTransactions = [];
+        this.difficulty = difficulty;
+        this.createNewBlock(0, '0', '0');
     }
 
     createNewBlock(nonce, previousBlockHash, hash) {
         const newBlock = {
-            index: this.chain.length + 1,
+            index: this.chain.length++,
             timestamp: Date.now(),
             transactions: this.pendingTransactions,
             nonce: nonce,
@@ -46,7 +48,7 @@ class Blockchain {
     proofOfWork(previousBlockHash, currentBlockData) {
         let nonce = 0;
         let hash = this.hashBlock(previousBlockHash, currentBlockData, nonce);
-        while (hash.substring(0, 4) !== '0000') {
+        while (hash.substring(0, 4) !== this.difficulty) {
             nonce++;
             hash = this.hashBlock(previousBlockHash, currentBlockData, nonce);
         }
