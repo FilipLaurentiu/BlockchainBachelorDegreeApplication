@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "node ./dev/test.js",
-    "runApi": "node ./dev/api.js"
+    "start": "nodemon --watch dev -e js dev/api.js"
   },
   "repository": {
     "type": "git",
@@ -19,6 +19,7 @@
   "homepage": "https://github.com/FilipLaurentiu/BlockchainBachelorDegreeApplication#readme",
   "dependencies": {
     "express": "^4.17.1",
+    "nodemon": "^1.19.1",
     "sha256": "^0.2.0"
   }
 }
