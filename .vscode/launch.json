@@ -8,7 +8,7 @@
             "type": "node",
             "request": "launch",
             "name": "Launch Program",
-            "program": "${workspaceFolder}/dev/blockchain.js"
+            "program": "${workspaceFolder}/dev/api.js"
         }
     ]
 }

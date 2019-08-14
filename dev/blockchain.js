@@ -11,7 +11,7 @@ class Blockchain {
 
     createNewBlock(nonce, previousBlockHash, hash) {
         const newBlock = {
-            index: this.chain.length++,
+            index: this.chain.length + 1,
             timestamp: Date.now(),
             transactions: this.pendingTransactions,
             nonce: nonce,
