@@ -5,7 +5,11 @@
   "main": "index.js",
   "scripts": {
     "test": "node ./dev/test.js",
-    "start": "nodemon --watch dev -e js dev/api.js"
+    "node_1": "nodemon --watch dev -e js dev/networkNode.js 3001 0xe210e12donq",
+    "node_2": "nodemon --watch dev -e js dev/networkNode.js 3002 0xMNUr3393000",
+    "node_3": "nodemon --watch dev -e js dev/networkNode.js 3003 0xOmrewerwer3",
+    "node_4": "nodemon --watch dev -e js dev/networkNode.js 3004 0xYdsmreorwrw",
+    "node_5": "nodemon --watch dev -e js dev/networkNode.js 3005 0xDwerweorndf"
   },
   "repository": {
     "type": "git",

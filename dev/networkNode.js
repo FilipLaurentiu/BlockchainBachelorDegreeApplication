@@ -4,22 +4,9 @@ const Blockchain = require('./blockchain');
 const uuid = require('uuid/v1');
 const fs = require('fs');
 const userDataPath = `${__dirname}/user.json`;
-
-let nodeAddress = '';
-fs.access(userDataPath, fs.constants.F_OK, (error) => {
-    if (error) {
-        const generatedAddress = uuid().split('-').join('');
-        const writeStream = fs.createWriteStream(userDataPath);
-        writeStream.write(JSON.stringify({ nodeAddress: generatedAddress }));
-        writeStream.close();
-    } else {
-        fs.readFile(userDataPath, (err, data) => {
-            if (data) {
-                this.nodeAddress = JSON.parse(data.toString()).nodeAddress;
-            }
-        })
-    }
-});
+const nodeAddress = process.argv[3] ? process.argv[3] : uuid().split('-').join('');
+console.log(nodeAddress);
+const port = process.argv[2];
 
 
 const UCVcoin = new Blockchain();
@@ -55,6 +42,6 @@ app.get('/mine', (req, res) => {
     });
 });
 
-app.listen(3000, () => {
-    console.log('Listening on port 3000...');
+app.listen(port, () => {
+    console.log(`Listening on port ${port}...`);
 });

@@ -8,7 +8,11 @@
             "type": "node",
             "request": "launch",
             "name": "Launch Program",
-            "program": "${workspaceFolder}/dev/api.js"
+            "program": "${workspaceFolder}/dev/networkNode.js",
+            "args": [
+                "3000",
+                "0x00000"
+            ],
         }
     ]
 }
