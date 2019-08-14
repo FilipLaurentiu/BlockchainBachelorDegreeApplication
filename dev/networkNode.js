@@ -45,3 +45,16 @@ app.get('/mine', (req, res) => {
 app.listen(port, () => {
     console.log(`Listening on port ${port}...`);
 });
+// register a node and broadcast a node to the network
+app.post('/register-and-broadcast-node', (req, res) => {
+    const newNodeUrl = req.body.newNodeUrl;
+});
+
+app.post('/register-node', (req, res) => {
+
+});
+
+//register multiple nodes at once
+app.post('register-nodes-bulk', (req, res) => {
+
+})
