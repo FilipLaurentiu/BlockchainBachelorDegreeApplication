@@ -55,11 +55,24 @@ class Blockchain {
     proofOfWork(previousBlockHash, currentBlockData) {
         let nonce = 0;
         let hash = this.hashBlock(previousBlockHash, currentBlockData, nonce);
-        while (hash.substring(0, 4) !== this.difficulty) {
+        while (hash.substring(0, this.difficulty.length) !== this.difficulty) {
             nonce++;
             hash = this.hashBlock(previousBlockHash, currentBlockData, nonce);
         }
         return nonce;
+    }
+
+    chainIsValid(blockchain) {
+        for (let i = 1; i < blockchain.length; i++) {
+            const currentBlock = blockchain[i];
+            const previousBlock = blockchain[i - 1];
+            const blockHash = this.hashBlock(previousBlock.hash, { transactions: currentBlock.transactions, index: currentBlock.index }, currentBlock.nonce);
+            if (currentBlock.previousBlockHash !== previousBlock.hash && blockHash.substring(0, this.difficulty.length) !== this.difficulty) {
+                return false;
+            }
+        }
+
+        return blockchain[0].nonce === 0 && blockchain[0].previousBlockHash === '0' && blockchain[0].hash === '0';
     }
 }
 
