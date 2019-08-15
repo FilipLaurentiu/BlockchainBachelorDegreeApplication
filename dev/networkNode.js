@@ -53,23 +53,24 @@ app.post('/transaction/broadcast', (req, res) => {
 
 app.get('/mine', (req, res) => {
     const lastBlock = UCVcoin.getLastBlock();
-    const previousBlockHash = lastBlock.hash;
-    const currectBlockData = {
-        transations: UCVcoin.pendingTransactions,
-        index: lastBlock.index + 1
-    }
-    const nonce = UCVcoin.proofOfWork(previousBlockHash, currectBlockData);
-    const blockHash = UCVcoin.hashBlock(previousBlockHash, currectBlockData, nonce);
+    const previousBlockHash = lastBlock['hash'];
+    const currentBlockData = {
+        transactions: UCVcoin.pendingTransactions,
+        index: lastBlock['index'] + 1
+    };
+    const nonce = UCVcoin.proofOfWork(previousBlockHash, currentBlockData);
+    const blockHash = UCVcoin.hashBlock(previousBlockHash, currentBlockData, nonce);
     const newBlock = UCVcoin.createNewBlock(nonce, previousBlockHash, blockHash);
 
     const requestPromises = [];
-    UCVcoin.networkNodes.forEach(node => {
+    UCVcoin.networkNodes.forEach(networkNodeUrl => {
         const requestOptions = {
-            uri: node + '/receive-new-block',
+            uri: networkNodeUrl + '/receive-new-block',
             method: 'POST',
             body: { newBlock },
             json: true
-        }
+        };
+
         requestPromises.push(rp(requestOptions));
     });
 
@@ -80,18 +81,41 @@ app.get('/mine', (req, res) => {
                 method: 'POST',
                 body: {
                     amount: 12.5,
-                    sender: "0x000000",
+                    sender: "0x000",
                     recipient: nodeAddress
                 },
                 json: true
             };
+
             return rp(requestOptions);
-        }).then(data => {
+        })
+        .then(data => {
             res.json({
-                note: "New block mined and broadcast successfully",
+                note: "New block mined & broadcast successfully",
                 block: newBlock
             });
         });
+});
+
+
+app.post('/receive-new-block', (req, res) => {
+    const newBlock = req.body.newBlock;
+    const lastBlock = UCVcoin.getLastBlock();
+    const correctHash = (lastBlock.hash === newBlock.previousBlockHash);
+    const correctIndex = (lastBlock.index + 1 === newBlock.index);
+    if (correctHash && correctIndex) {
+        UCVcoin.chain.push(newBlock);
+        UCVcoin.pendingTransactions = [];
+        res.json({
+            note: 'New block recive and accepted.',
+            newBlock
+        });
+    } else {
+        res.json({
+            note: 'New block rejected.',
+            newBlock
+        });
+    }
 });
 
 // register a node and broadcast a node to the network
