@@ -67,7 +67,7 @@ class Blockchain {
             const currentBlock = blockchain[i];
             const previousBlock = blockchain[i - 1];
             const blockHash = this.hashBlock(previousBlock.hash, { transactions: currentBlock.transactions, index: currentBlock.index }, currentBlock.nonce);
-            if (currentBlock.previousBlockHash !== previousBlock.hash && blockHash.substring(0, this.difficulty.length) !== this.difficulty) {
+            if (currentBlock.previousBlockHash !== previousBlock.hash || blockHash.substring(0, this.difficulty.length) !== this.difficulty) {
                 return false;
             }
         }
