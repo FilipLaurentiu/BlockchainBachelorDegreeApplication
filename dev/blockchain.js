@@ -1,5 +1,4 @@
 const sha256 = require('sha256');
-const currentNodeUrl = `http://localhost:${process.argv[2]}`;
 
 class Blockchain {
     constructor(difficulty = '0000') {
@@ -8,6 +7,7 @@ class Blockchain {
         this.difficulty = difficulty;
         this.networkNodes = [];
         this.createNewBlock(0, '0', '0');
+        this.currentNodeUrl = `http://localhost:${process.argv[2]}`;
     }
 
     createNewBlock(nonce, previousBlockHash, hash) {

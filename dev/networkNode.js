@@ -50,7 +50,7 @@ app.post('/register-and-broadcast-node', (req, res) => {
     const regNodesPromises = [];
     UCVcoin.networkNodes.forEach(node => {
         const requestOptions = {
-            uri: networkNodeUrl + '/register-node',
+            uri: newNodeUrl + '/register-node',
             method: 'POST',
             body: { newNodeUrl },
             json: true
@@ -66,7 +66,7 @@ app.post('/register-and-broadcast-node', (req, res) => {
         }
         return rp(bulkRegisterOptions);
     }).then(data => {
-        resizeBy.json({ note: "New node registered succesfully" });
+        res.json({ note: "New node registered succesfully" });
     });
 });
 
