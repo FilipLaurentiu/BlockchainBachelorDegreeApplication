@@ -60,12 +60,38 @@ app.get('/mine', (req, res) => {
     }
     const nonce = UCVcoin.proofOfWork(previousBlockHash, currectBlockData);
     const blockHash = UCVcoin.hashBlock(previousBlockHash, currectBlockData, nonce);
-    UCVcoin.createNewTransaction(12.5, '0x0', nodeAddress); // reward the miner
     const newBlock = UCVcoin.createNewBlock(nonce, previousBlockHash, blockHash);
-    res.json({
-        note: "New block mined successfully",
-        block: newBlock,
+
+    const requestPromises = [];
+    UCVcoin.networkNodes.forEach(node => {
+        const requestOptions = {
+            uri: node + '/receive-new-block',
+            method: 'POST',
+            body: { newBlock },
+            json: true
+        }
+        requestPromises.push(rp(requestOptions));
     });
+
+    Promise.all(requestPromises)
+        .then(data => {
+            const requestOptions = {
+                uri: UCVcoin.currentNodeUrl + '/transaction/broadcast',
+                method: 'POST',
+                body: {
+                    amount: 12.5,
+                    sender: "0x000000",
+                    recipient: nodeAddress
+                },
+                json: true
+            };
+            return rp(requestOptions);
+        }).then(data => {
+            res.json({
+                note: "New block mined and broadcast successfully",
+                block: newBlock
+            });
+        });
 });
 
 // register a node and broadcast a node to the network
