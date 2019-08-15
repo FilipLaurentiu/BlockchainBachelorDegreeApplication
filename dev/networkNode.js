@@ -3,10 +3,16 @@ const bodyParser = require('body-parser');
 const Blockchain = require('./blockchain');
 const uuid = require('uuid/v1');
 const rp = require('request-promise');
-const nodeAddress = process.argv[3] ? process.argv[3] : uuid().split('-').join('');
-console.log(nodeAddress);
 const port = process.argv[2];
 
+
+let nodeAddress = '';
+if (process.argv[3]) {
+    nodeAddress = process.argv[3];
+} else {
+    nodeAddress = uuid().split('-').join('');
+    console.log(nodeAddress);
+}
 
 const UCVcoin = new Blockchain();
 var app = express();
@@ -19,9 +25,30 @@ app.get('/blockchain', (req, res) => {
 });
 
 app.post('/transaction', (req, res) => {
+    const newTransaction = req.body;
+    const blockIndex = UCVcoin.addTransactionToPendingTransactions(newTransaction);
+    res.json({ note: `Transaction will be added in block ${blockIndex}` });
+});
+
+app.post('/transaction/broadcast', (req, res) => {
     const body = req.body;
-    const blockIndex = UCVcoin.createNewTransaction(body.amount, body.sender, body.recipient)
-    res.json({ note: `Transaction will be added in block ${blockIndex}.` });
+    const newTransaction = UCVcoin.createNewTransaction(body.amount, body.sender, body.recipient);
+    UCVcoin.addTransactionToPendingTransactions(newTransaction);
+
+    const requestPromises = [];
+    UCVcoin.networkNodes.forEach(node => {
+        const requestOptions = {
+            uri: node + '/transaction',
+            method: 'POST',
+            body: newTransaction,
+            json: true
+        }
+
+        requestPromises.push(rp(requestOptions));
+    });
+    Promise.all(requestPromises).then(data => {
+        res.json({ note: 'Transaction created and broadcast successfully.' })
+    });
 });
 
 app.get('/mine', (req, res) => {
