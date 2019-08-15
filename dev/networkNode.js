@@ -2,8 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const Blockchain = require('./blockchain');
 const uuid = require('uuid/v1');
-const fs = require('fs');
-const userDataPath = `${__dirname}/user.json`;
+const rp = require('request-promise');
 const nodeAddress = process.argv[3] ? process.argv[3] : uuid().split('-').join('');
 console.log(nodeAddress);
 const port = process.argv[2];
@@ -42,19 +41,57 @@ app.get('/mine', (req, res) => {
     });
 });
 
-app.listen(port, () => {
-    console.log(`Listening on port ${port}...`);
-});
 // register a node and broadcast a node to the network
 app.post('/register-and-broadcast-node', (req, res) => {
     const newNodeUrl = req.body.newNodeUrl;
+    if (!UCVcoin.networkNodes.includes(newNodeUrl)) {
+        UCVcoin.networkNodes.push(newNodeUrl);
+    }
+    const regNodesPromises = [];
+    UCVcoin.networkNodes.forEach(node => {
+        const requestOptions = {
+            uri: networkNodeUrl + '/register-node',
+            method: 'POST',
+            body: { newNodeUrl },
+            json: true
+        }
+        regNodesPromises.push(rp(requestOptions));
+    });
+    Promise.all(regNodesPromises).then(data => {
+        const bulkRegisterOptions = {
+            uri: newNodeUrl + '/register-nodes-bulk',
+            method: 'POST',
+            body: { allNetworkNodes: [...UCVcoin.networkNodes, UCVcoin.currentNodeUrl] },
+            json: true
+        }
+        return rp(bulkRegisterOptions);
+    }).then(data => {
+        resizeBy.json({ note: "New node registered succesfully" });
+    });
 });
 
 app.post('/register-node', (req, res) => {
-
+    const newNodeUrl = req.body.newNodeUrl;
+    if (!UCVcoin.networkNodes.includes(newNodeUrl) && newNodeUrl !== UCVcoin.currentNodeUrl) {
+        UCVcoin.networkNodes.push(newNodeUrl);
+        res.json({ note: "New node register succsessfully." })
+    } else {
+        res.json({ note: "Note already exist" });
+    }
 });
 
 //register multiple nodes at once
-app.post('register-nodes-bulk', (req, res) => {
-
+app.post('/register-nodes-bulk', (req, res) => {
+    const allNetworkNodes = req.body.allNetworkNodes;
+    allNetworkNodes.forEach(networkNodeUrl => {
+        if (!UCVcoin.networkNodes.includes(networkNodeUrl) && networkNodeUrl !== UCVcoin.currentNodeUrl) {
+            UCVcoin.networkNodes.push(networkNodeUrl);
+        }
+    });
+    res.json({ note: 'Bulk registration successful.' });
 })
+
+
+app.listen(port, () => {
+    console.log(`Listening on port ${port}...`);
+});

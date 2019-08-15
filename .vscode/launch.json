@@ -10,7 +10,7 @@
             "name": "Launch Program",
             "program": "${workspaceFolder}/dev/networkNode.js",
             "args": [
-                "3000",
+                "3009",
                 "0x00000"
             ],
         }
