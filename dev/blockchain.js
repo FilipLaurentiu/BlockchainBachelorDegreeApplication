@@ -74,6 +74,10 @@ class Blockchain {
 
         return blockchain[0].nonce === 0 && blockchain[0].previousBlockHash === '0' && blockchain[0].hash === '0';
     }
+
+    getBlock(blockHash) {
+        return this.chain.find(block => block.hash === blockHash);
+    }
 }
 
 module.exports = Blockchain;
