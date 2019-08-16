@@ -224,7 +224,12 @@ app.get('/block/:blockHash', (req, res) => {
 });
 
 app.get('/transaction/:transactionId', (req, res) => {
-
+    const transactionId = req.params.transactionId;
+    const correctTransaction = UCVcoin.getTransaction(transactionId);
+    res.json({
+        transaction: correctTransaction.transaction,
+        block: correctTransaction.block
+    })
 });
 
 app.get('/address/:address', (req, res) => {

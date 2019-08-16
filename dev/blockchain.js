@@ -78,6 +78,21 @@ class Blockchain {
     getBlock(blockHash) {
         return this.chain.find(block => block.hash === blockHash);
     }
+
+    getTransaction(transactionId) {
+        let correctTransaction = null;
+        let correctBlock = null;
+        this.chain.forEach(block => {
+            block.transactions.forEach(transaction => {
+                if (transaction.transactionId === transactionId) {
+                    correctTransaction = transaction;
+                    correctBlock = block;
+                    return;
+                }
+            });
+        });
+        return { transaction: correctTransaction, block: correctBlock };
+    }
 }
 
 module.exports = Blockchain;
