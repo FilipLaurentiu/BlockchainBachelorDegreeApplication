@@ -2,10 +2,10 @@ const sha256 = require('sha256');
 const uuid = require('uuid/v1');
 
 class Blockchain {
-    constructor(difficulty = '0000') {
+    constructor() {
         this.chain = [];
         this.pendingTransactions = [];
-        this.difficulty = difficulty;
+        this.difficulty = '0000';
         this.networkNodes = [];
         this.createNewBlock(0, '0', '0');
         this.currentNodeUrl = `http://localhost:${process.argv[2]}`;
@@ -95,16 +95,16 @@ class Blockchain {
     }
 
     getAddressData(address) {
-        const addressTransaction = [];
+        const addressTransactions = [];
         this.chain.forEach(block => {
             block.transactions.forEach(transaction => {
                 if (transaction.sender === address || transaction.recipient === address) {
-                    addressTransaction.push(transaction);
+                    addressTransactions.push(transaction);
                 }
             });
         });
         let balance = 0;
-        addressTransaction.forEach(transaction => {
+        addressTransactions.forEach(transaction => {
             if (transaction.recipient === address) {
                 balance += transaction.amount;
             } else {
@@ -113,7 +113,7 @@ class Blockchain {
         })
 
         return {
-            addressTransaction: addressTransaction,
+            addressTransactions,
             addressBalance: balance
         }
     }

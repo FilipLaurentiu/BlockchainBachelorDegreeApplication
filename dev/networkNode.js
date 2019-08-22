@@ -235,10 +235,13 @@ app.get('/transaction/:transactionId', (req, res) => {
 app.get('/address/:address', (req, res) => {
     const address = req.params.address;
     const addressData = UCVcoin.getAddressData(address);
-    res.json(addressData)
+    res.json({ addressData })
 });
 
+app.get('/block-explorer', (req, res) => {
+    res.sendFile('./block-explorer/index.html', { root: __dirname });
+})
 
 app.listen(port, () => {
-    console.log(`Listening on port ${port}...`);
+    console.log(`Your blockchain start on http://localhost:${port} ...`);
 });
